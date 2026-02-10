@@ -1,4 +1,5 @@
 use clap::Parser;
+use std::path::PathBuf;
 
 /// LLM-powered Git Commit assistant
 #[derive(Parser)]
@@ -15,4 +16,8 @@ pub struct CliArgs {
     /// 设置 diff 最大 token 数
     #[arg(long)]
     pub limit: Option<usize>,
+
+    /// 指定配置文件路径
+    #[arg(long)]
+    pub config: Option<PathBuf>,
 }

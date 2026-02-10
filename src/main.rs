@@ -8,17 +8,6 @@ use llmc::git::GitRepository;
 use llmc::llm::LlmProviderFactory;
 use llmc::prompt::TerminalPrompt;
 
-/// 查找 config.toml：优先使用可执行文件所在目录，其次当前目录
-fn find_config_path() -> std::path::PathBuf {
-    if let Ok(exe_path) = std::env::current_exe() {
-        let exe_dir_config = exe_path.parent().unwrap().join("config.toml");
-        if exe_dir_config.exists() {
-            return exe_dir_config;
-        }
-    }
-    std::path::PathBuf::from("config.toml")
-}
-
 #[tokio::main]
 async fn main() {
     if let Err(e) = run().await {
@@ -30,8 +19,8 @@ async fn main() {
 async fn run() -> Result<(), AppError> {
     let args = CliArgs::parse();
 
-    // 加载配置
-    let config_path = find_config_path();
+    // 解析配置文件路径（--config > ~/.config/llmc/ > ./config.toml > 自动创建）
+    let config_path = AppConfig::resolve_config_path(args.config.as_deref())?;
     let mut config = AppConfig::load(&config_path)?;
 
     // 如果指定了 --limit，覆盖配置中的 token_limit
