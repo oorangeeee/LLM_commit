@@ -13,7 +13,7 @@ pub struct CliArgs {
     #[arg(long = "model_list")]
     pub model_list: bool,
 
-    /// 设置 diff 最大 token 数
+    /// 设置 diff 最大 token 数（修改配置文件并退出）
     #[arg(long)]
     pub limit: Option<usize>,
 

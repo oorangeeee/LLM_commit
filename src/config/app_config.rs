@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::path::{Path, PathBuf};
 
 use super::ModelConfig;
@@ -9,7 +9,7 @@ use crate::error::AppError;
 const DEFAULT_CONFIG: &str = include_str!("../../config.toml");
 
 /// 全局配置，从 config.toml 反序列化。
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct AppConfig {
     pub default_model: String,
     pub token_limit: usize,

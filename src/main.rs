@@ -23,9 +23,16 @@ async fn run() -> Result<(), AppError> {
     let config_path = AppConfig::resolve_config_path(args.config.as_deref())?;
     let mut config = AppConfig::load(&config_path)?;
 
-    // 如果指定了 --limit，覆盖配置中的 token_limit
+    // 如果指定了 --limit，修改配置文件中的 token_limit 并退出
     if let Some(limit) = args.limit {
         config.token_limit = limit;
+        // 保存修改后的配置
+        let toml_str = toml::to_string_pretty(&config)
+            .map_err(|e| AppError::Config(format!("序列化配置失败: {}", e)))?;
+        std::fs::write(&config_path, toml_str)
+            .map_err(|e| AppError::Config(format!("写入配置文件失败: {}", e)))?;
+        println!("已更新配置: token_limit = {}", limit);
+        return Ok(());
     }
 
     // 确定使用的模型
